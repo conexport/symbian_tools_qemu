@@ -1021,7 +1021,7 @@ static int find_vdi_name(BDRVSheepdogState *s, char *filename, uint32_t snapid,
     SheepdogVdiReq hdr;
     SheepdogVdiRsp *rsp = (SheepdogVdiRsp *)&hdr;
     unsigned int wlen, rlen = 0;
-    char buf[SD_MAX_VDI_LEN + SD_MAX_VDI_TAG_LEN];
+    char buf[SD_MAX_VDI_LEN + SD_MAX_VDI_TAG_LEN + 1];
 
     fd = connect_to_sdog(s->addr, s->port);
     if (fd < 0) {
@@ -1270,7 +1270,7 @@ static int do_sd_create(char *filename, int64_t vdi_size,
     SheepdogVdiRsp *rsp = (SheepdogVdiRsp *)&hdr;
     int fd, ret;
     unsigned int wlen, rlen = 0;
-    char buf[SD_MAX_VDI_LEN];
+    char buf[SD_MAX_VDI_LEN + 1];
 
     fd = connect_to_sdog(addr, port);
     if (fd < 0) {
