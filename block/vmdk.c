@@ -175,7 +175,7 @@ static int vmdk_probe(const uint8_t *buf, int buf_size, const char *filename)
 
 #define SECTOR_SIZE 512
 #define DESC_SIZE (20 * SECTOR_SIZE)    /* 20 sectors of 512 bytes each */
-#define BUF_SIZE 4096
+#define BUF_SIZE 4096 + PATH_MAX
 #define HEADER_SIZE 512                 /* first sector of 512 bytes */
 
 static void vmdk_free_extents(BlockDriverState *bs)
@@ -1444,8 +1444,8 @@ static int vmdk_create(const char *filename, QEMUOptionParameter *options)
     filesize = total_size;
     while (filesize > 0) {
         char desc_line[BUF_SIZE];
-        char ext_filename[PATH_MAX];
-        char desc_filename[PATH_MAX];
+        char ext_filename[PATH_MAX*3+20];
+        char desc_filename[PATH_MAX*2+20];
         int64_t size = filesize;
 
         if (split && size > split_size) {
