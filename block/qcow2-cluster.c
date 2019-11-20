@@ -248,8 +248,10 @@ static int count_contiguous_clusters(uint64_t nb_clusters, int cluster_size,
         return 0;
 
     for (i = start; i < start + nb_clusters; i++)
+	{
         if (offset + (uint64_t) i * cluster_size != (be64_to_cpu(l2_table[i]) & ~mask))
             break;
+	}
 
 	return (i - start);
 }
