@@ -141,7 +141,7 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
                    const gchar *msg, gpointer opaque)
 {
     GAState *s = opaque;
-    GTimeVal time;
+    gint64 time;
     const char *level_str = ga_log_level_str(level);
 
     if (!ga_logging_enabled(s)) {
@@ -152,9 +152,9 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
     if (domain && strcmp(domain, "syslog") == 0) {
         syslog(LOG_INFO, "%s: %s", level_str, msg);
     } else if (level & s->log_level) {
-        g_get_current_time(&time);
+        time = g_get_real_time();
         fprintf(s->log_file,
-                "%lu.%lu: %s: %s\n", time.tv_sec, time.tv_usec, level_str, msg);
+                "%" G_GINT64_FORMAT ".%" G_GINT64_FORMAT ": %s: %s\n", time / G_USEC_PER_SEC, time, level_str, msg);
         fflush(s->log_file);
     }
 }
