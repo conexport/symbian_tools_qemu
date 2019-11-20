@@ -30,8 +30,25 @@
 # define QEMU_PACKED __attribute__((packed))
 #endif
 
-#define QEMU_BUILD_BUG_ON(x) \
-    typedef char qemu_build_bug_on__##__LINE__[(x)?-1:1];
+#define QEMU_BUILD_BUG_ON_STRUCT(x) \
+    struct { \
+        int:(x) ? -1 : 1; \
+    }
+
+/* QEMU_BUILD_BUG_MSG() emits the message given if _Static_assert is
+ * supported; otherwise, it will be omitted from the compiler error
+ * message (but as it remains present in the source code, it can still
+ * be useful when debugging). */
+#if defined(CONFIG_STATIC_ASSERT)
+#define QEMU_BUILD_BUG_MSG(x, msg) _Static_assert(!(x), msg)
+#elif defined(__COUNTER__)
+#define QEMU_BUILD_BUG_MSG(x, msg) typedef QEMU_BUILD_BUG_ON_STRUCT(x) \
+    glue(qemu_build_bug_on__, __COUNTER__) __attribute__((unused))
+#else
+#define QEMU_BUILD_BUG_MSG(x, msg)
+#endif
+
+#define QEMU_BUILD_BUG_ON(x) QEMU_BUILD_BUG_MSG(x, "not expecting: " #x)
 
 #if defined __GNUC__
 # if !QEMU_GNUC_PREREQ(4, 4)
