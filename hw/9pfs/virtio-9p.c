@@ -13,6 +13,7 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <sys/sysmacros.h>
 
 #include "hw/virtio.h"
 #include "hw/pc.h"
